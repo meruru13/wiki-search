@@ -1,4 +1,5 @@
 const form = document.querySelector('.js-search-form')
+const spinner = document.querySelector('.js-spinner')
 
 form.addEventListener('submit', handleSubmit)
 
@@ -6,11 +7,20 @@ async function handleSubmit(event) {
   event.preventDefault()
   const inputValue = document.querySelector('.js-search-input').value
   const searchQuery = inputValue.trim()
+  const searchResults = document.querySelector('.js-search-results')
+  searchResults.innerHTML = ''
+  spinner.classList.remove('hidden')
   try {
   const results = await searchWiki(searchQuery)
+  if (results.query.searchinfo.totalhits === 0) {
+    alert('No results found. Try different keywords');
+    return;
+  }
   displayResults(results)
   } catch (err) {
     alert(`Failed. ${err}`)
+  } finally {
+    spinner.classList.add('hidden')
   }
   
 }
